@@ -1,7 +1,6 @@
 var fs = require('fs');
 var path = require('canonical-path');
 var _ = require('lodash');
-var xlsx = require('excel4node');
 
 
 // Custom reporter
