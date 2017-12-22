@@ -109,11 +109,10 @@ function initOutputFile(outputFile) {
   fs.writeFileSync(outputFile, htmlFile+header, 'UTF-8');
 }
 
-
 // for output file output
   function formatOutput(output) {
-    //var indent = '  ';
-    //var pad = '  ';
+    var indent = '  ';
+    var pad = '  ';
     var results = [];
     results.push('AppDir:' + output.appDir);
     results.push('<h3>Total tests:'+ specAll);
@@ -137,7 +136,7 @@ function initOutputFile(outputFile) {
         }
       });
 
-      results.push('</div></body></html>');
+      results.push('</div></BODY></HTML>');
       results.push('');
     });
 
