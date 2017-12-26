@@ -16,7 +16,7 @@ var Reporter = function (options) {
   options.outputFile = options.outputFile || _defaultOutputFile;
 
   initOutputFile(options.outputFile);
-  var screenshotDir = path.dirname(options.outputFile) + '/screens/_';
+  var screenshotDir = path.dirname(options.outputFile) + '/screens/';
   options.appDir = options.appDir || './';
   var _root = { appDir: options.appDir, suites: [] };
   log('AppDir: ' + options.appDir, +1);
@@ -45,7 +45,6 @@ var Reporter = function (options) {
   };
 
   this.specDone = function (spec) {
-
     
     var screenshotName = screenshotDir + spec.description.replace(/\s+/g, "_") + '.png';
 
@@ -65,7 +64,7 @@ var Reporter = function (options) {
     if (spec.failedExpectations.length > 0) {
       currentSpec.failedExpectations = spec.failedExpectations;
     }
-    spec.status==='passed'?specPassed++:specFailed++;
+    //spec.status==='passed'?specPassed++:specFailed++;
     _currentSuite.specs.push(currentSpec);
     log(spec.status + ' - ' + spec.description);
   };
@@ -98,20 +97,20 @@ var Reporter = function (options) {
 
   //function for read index.html
   function readHtmlFile(htmlFile) {
-    return fs.readFileSync(htmlFile, 'UTF-8');
+    return fs.readFileSync(htmlFile, 'utf-8');
   }
 
   function initOutputFile(outputFile) {
     ensureDirectoryExistence(outputFile, '/screens');
     var htmlFile = readHtmlFile(indexHtmlFile);
     var header = "<div>Protractor results for: " + (new Date()).toLocaleString() + '</div>';
-    fs.writeFileSync(outputFile, htmlFile + header, 'UTF-8');
+    fs.writeFileSync(outputFile, htmlFile + header, 'utf-8');
   }
 
   // for output file output
   function formatOutput(output) {
-    var indent = '  ';
-    var pad = '  ';
+    // var indent = '  ';
+    // var pad = '  ';
     var results = [];
     results.push('<p>AppDir:' + output.appDir + '</p>');
     results.push('<h3>Total tests:' + specAll + '</h3>');
@@ -121,20 +120,20 @@ var Reporter = function (options) {
     output.suites.forEach(function (suite) {
 
       results.push('<p>' + 'Suite: ' + suite.description + ' -- ' + suite.status + '</p><hr>');
-      pad += indent;
+      //pad += indent;
       suite.specs.forEach(function (spec) {
         results.push('<p>' + spec.description + '<div class="passed">' + spec.status + '</div> </p>');
         results.push('<img src=' + spec.img + '  width="1200" height="800"/>');
 
         if (spec.failedExpectations) {
-          pad += indent;
+         // pad += indent;
           spec.failedExpectations.forEach(function (fe) {
             results.push('<p><div class="failed">message: ' + fe.message + '</div></p>');
           });
 
         }
       });
-
+      results.push('');
     });
 
     results.push('</div></BODY></HTML>');
