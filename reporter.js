@@ -114,8 +114,8 @@ function initOutputFile(outputFile) {
     var indent = '  ';
     var pad = '  ';
     var results = [];
-    results.push('AppDir:' + output.appDir);
-    results.push('<h3>Total tests:'+ specAll);
+    results.push('<p>AppDir:' + output.appDir+'</p>');
+    results.push('<h3>Total tests:'+ specAll + '</h3>');
     results.push('<p>Passed tests:<div class="passed">'+specPassed+'</div></p>');
     results.push('<p>Failed tests:<div class="failed">'+specFailed+'</div></p>');
     
