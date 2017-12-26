@@ -16,6 +16,7 @@ var Reporter = function (options) {
   options.outputFile = options.outputFile || _defaultOutputFile;
 
   initOutputFile(options.outputFile);
+  var screenshotDir = path.dirname(options.outputFile) + '/screens/_';
   options.appDir = options.appDir || './';
   var _root = { appDir: options.appDir, suites: [] };
   log('AppDir: ' + options.appDir, +1);
@@ -45,15 +46,8 @@ var Reporter = function (options) {
 
   this.specDone = function (spec) {
 
-    var screenshotDir = path.dirname(options.outputFile) + '/screens/_';
+    
     var screenshotName = screenshotDir + spec.description.replace(/\s+/g, "_") + '.png';
-
-    //take a screenshot
-    browser.takeScreenshot().then(function (png) {
-      var stream = fs.createWriteStream(screenshotName);
-      stream.write(new Buffer(png, 'base64'));
-      stream.end();
-    });
 
     var currentSpec = {
       description: spec.description,
@@ -61,11 +55,17 @@ var Reporter = function (options) {
       img: screenshotName
     };
 
+    //take a screenshot
+    browser.takeScreenshot().then(function (png) {
+      var stream = fs.createWriteStream(screenshotName);
+      stream.write(new Buffer(png, 'base64'));
+      stream.end();
+    });    
+
     if (spec.failedExpectations.length > 0) {
       currentSpec.failedExpectations = spec.failedExpectations;
     }
-
-
+    spec.status==='passed'?specPassed++:specFailed++;
     _currentSuite.specs.push(currentSpec);
     log(spec.status + ' - ' + spec.description);
   };
@@ -82,7 +82,6 @@ var Reporter = function (options) {
     if (directoryExists(dirname)) {
       return true;
     }
-
     ensureDirectoryExistence(dirname);
     fs.mkdirSync(dirname);
 
