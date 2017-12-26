@@ -46,7 +46,7 @@ var Reporter = function (options) {
 
   this.specDone = function (spec) {
     
-    var screenshotName = screenshotDir + spec.description.replace(/\s+/g, "_") + '.png';
+    var screenshotName = screenshotDir + spec.description.replace(/\s+/g, "_");
 
     var currentSpec = {
       description: spec.description,
@@ -55,9 +55,9 @@ var Reporter = function (options) {
     };
 
     //take a screenshot
-    browser.takeScreenshot().then(function (png) {
-      var stream = fs.createWriteStream(screenshotName);
-      stream.write(new Buffer(png, 'base64'));
+    browser.takeScreenshot().then(function (base64png) {
+      var stream = fs.createWriteStream(screenshotName + '.png');
+      stream.write(new Buffer(base64png, 'base64'));
       stream.end();
     });    
 
@@ -101,7 +101,7 @@ var Reporter = function (options) {
   }
 
   function initOutputFile(outputFile) {
-    ensureDirectoryExistence(outputFile, '/screens');
+    ensureDirectoryExistence(outputFile, '/screens/');
     var htmlFile = readHtmlFile(indexHtmlFile);
     var header = "<div>Protractor results for: " + (new Date()).toLocaleString() + '</div>';
     fs.writeFileSync(outputFile, htmlFile + header, 'utf-8');
@@ -123,12 +123,13 @@ var Reporter = function (options) {
       //pad += indent;
       suite.specs.forEach(function (spec) {
         results.push('<p>' + spec.description + '<div class="passed">' + spec.status + '</div> </p>');
-        results.push('<img src=' + spec.img + '  width="1200" height="800"/>');
+        results.push('<img src=' + spec.img + '  width="800" height="600"/>');
 
         if (spec.failedExpectations) {
          // pad += indent;
           spec.failedExpectations.forEach(function (fe) {
             results.push('<p><div class="failed">message: ' + fe.message + '</div></p>');
+            results.push('<img src=' + spec.img + '  width="800" height="600"/>');
           });
 
         }
@@ -136,7 +137,7 @@ var Reporter = function (options) {
       results.push('');
     });
 
-    results.push('</div></BODY></HTML>');
+    results.push('</div></body></html>');
     return results.join('\n');
   }
 
