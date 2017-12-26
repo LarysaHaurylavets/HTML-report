@@ -61,6 +61,25 @@ var Reporter = function (options) {
       stream.end();
     });    
 
+
+    // browser.takeScreenshot().then(function (png) {
+    //   browser.getCapabilities().then(function (capabilities) {
+    //       var screenshotPath, file;
+
+    //       file = opts.pathBuilder(spec, suites, capabilities);
+    //       spec.filename = file + '.png';
+    //       screenshotPath = path.join(opts.dest, spec.filename);
+    //       
+
+    //       mkdirp(path.dirname(screenshotPath), function (err) {
+    //           if (err) {
+    //               throw new Error('Could not create directory for ' + screenshotPath);
+    //           }
+    //           writeScreenshot(png, spec.filename);
+    //       });
+    //   });
+    // });
+
     if (spec.failedExpectations.length > 0) {
       currentSpec.failedExpectations = spec.failedExpectations;
     }
@@ -73,7 +92,8 @@ var Reporter = function (options) {
   this.jasmineDone = function () {
     outputFile = options.outputFile;
     var output = formatOutput(_root);
-    fs.appendFileSync(outputFile, output);
+    fs.writeSync(outputFile, output);
+    fs.closeSync(outputFile);
   };
 
   function ensureDirectoryExistence(filePath) {
@@ -97,20 +117,19 @@ var Reporter = function (options) {
 
   //function for read index.html
   function readHtmlFile(htmlFile) {
-    return fs.readFileSync(htmlFile, 'utf-8');
+    return fs.readFileSync(htmlFile, 'utf8');
   }
 
   function initOutputFile(outputFile) {
     ensureDirectoryExistence(outputFile, '/screens/');
     var htmlFile = readHtmlFile(indexHtmlFile);
     var header = "<div>Protractor results for: " + (new Date()).toLocaleString() + '</div>';
-    fs.writeFileSync(outputFile, htmlFile + header, 'utf-8');
+    fs.writeFileSync(outputFile, htmlFile + header, 'utf8');
   }
 
   // for output file output
   function formatOutput(output) {
-    // var indent = '  ';
-    // var pad = '  ';
+  
     var results = [];
     results.push('<p>AppDir:' + output.appDir + '</p>');
     results.push('<h3>Total tests:' + specAll + '</h3>');
@@ -120,13 +139,12 @@ var Reporter = function (options) {
     output.suites.forEach(function (suite) {
 
       results.push('<p>' + 'Suite: ' + suite.description + ' -- ' + suite.status + '</p><hr>');
-      //pad += indent;
+      
       suite.specs.forEach(function (spec) {
         results.push('<p>' + spec.description + '<div class="passed">' + spec.status + '</div> </p>');
         results.push('<img src=' + spec.img + '  width="800" height="600"/>');
 
-        if (spec.failedExpectations) {
-         // pad += indent;
+        if (spec.failedExpectations) {       
           spec.failedExpectations.forEach(function (fe) {
             results.push('<p><div class="failed">message: ' + fe.message + '</div></p>');
             results.push('<img src=' + spec.img + '  width="800" height="600"/>');
