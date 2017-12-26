@@ -16,7 +16,7 @@ var Reporter = function (options) {
   options.outputFile = options.outputFile || _defaultOutputFile;
 
   initOutputFile(options.outputFile);
-  var screenshotDir = path.dirname(options.outputFile) + '/screens/';
+  var screenshotDir = path.dirname(options.outputFile) + '/_test-output';
   options.appDir = options.appDir || './';
   var _root = { appDir: options.appDir, suites: [] };
   log('AppDir: ' + options.appDir, +1);
@@ -45,8 +45,8 @@ var Reporter = function (options) {
   };
 
   this.specDone = function (spec) {
-    
-    var screenshotName = screenshotDir + spec.description.replace(/\s+/g, "_");
+
+    var screenshotName = screenshotDir + spec.description.replace(/\s+/g, "_")+'.png';
 
     var currentSpec = {
       description: spec.description,
@@ -56,29 +56,11 @@ var Reporter = function (options) {
 
     //take a screenshot
     browser.takeScreenshot().then(function (base64png) {
-      var stream = fs.createWriteStream(screenshotName + '.png');
+      var stream = fs.createWriteStream(screenshotName);
       stream.write(new Buffer(base64png, 'base64'));
       stream.end();
-    });    
+    });
 
-
-    // browser.takeScreenshot().then(function (png) {
-    //   browser.getCapabilities().then(function (capabilities) {
-    //       var screenshotPath, file;
-
-    //       file = opts.pathBuilder(spec, suites, capabilities);
-    //       spec.filename = file + '.png';
-    //       screenshotPath = path.join(opts.dest, spec.filename);
-    //       
-
-    //       mkdirp(path.dirname(screenshotPath), function (err) {
-    //           if (err) {
-    //               throw new Error('Could not create directory for ' + screenshotPath);
-    //           }
-    //           writeScreenshot(png, spec.filename);
-    //       });
-    //   });
-    // });
 
     if (spec.failedExpectations.length > 0) {
       currentSpec.failedExpectations = spec.failedExpectations;
@@ -92,8 +74,7 @@ var Reporter = function (options) {
   this.jasmineDone = function () {
     outputFile = options.outputFile;
     var output = formatOutput(_root);
-    fs.writeSync(outputFile, output);
-    fs.closeSync(outputFile);
+    fs.appendFileSync(outputFile, output);
   };
 
   function ensureDirectoryExistence(filePath) {
@@ -121,7 +102,7 @@ var Reporter = function (options) {
   }
 
   function initOutputFile(outputFile) {
-    ensureDirectoryExistence(outputFile, '/screens/');
+    ensureDirectoryExistence(outputFile, '/_test-output');
     var htmlFile = readHtmlFile(indexHtmlFile);
     var header = "<div>Protractor results for: " + (new Date()).toLocaleString() + '</div>';
     fs.writeFileSync(outputFile, htmlFile + header, 'utf8');
@@ -129,7 +110,7 @@ var Reporter = function (options) {
 
   // for output file output
   function formatOutput(output) {
-  
+
     var results = [];
     results.push('<p>AppDir:' + output.appDir + '</p>');
     results.push('<h3>Total tests:' + specAll + '</h3>');
@@ -139,12 +120,12 @@ var Reporter = function (options) {
     output.suites.forEach(function (suite) {
 
       results.push('<p>' + 'Suite: ' + suite.description + ' -- ' + suite.status + '</p><hr>');
-      
+
       suite.specs.forEach(function (spec) {
         results.push('<p>' + spec.description + '<div class="passed">' + spec.status + '</div> </p>');
         results.push('<img src=' + spec.img + '  width="800" height="600"/>');
 
-        if (spec.failedExpectations) {       
+        if (spec.failedExpectations) {
           spec.failedExpectations.forEach(function (fe) {
             results.push('<p><div class="failed">message: ' + fe.message + '</div></p>');
             results.push('<img src=' + spec.img + '  width="800" height="600"/>');
@@ -152,9 +133,8 @@ var Reporter = function (options) {
 
         }
       });
-      results.push('');
-    });
 
+    });
     results.push('</div></body></html>');
     return results.join('\n');
   }
