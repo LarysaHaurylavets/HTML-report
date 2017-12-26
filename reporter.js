@@ -103,7 +103,7 @@ function readHtmlFile(htmlFile){
 }
 
 function initOutputFile(outputFile) {
-  ensureDirectoryExistence(outputFile);
+  ensureDirectoryExistence(outputFile, '/screens');
   var htmlFile = readHtmlFile(indexHtmlFile);
   var header = "<div>Protractor results for: " + (new Date()).toLocaleString() + '</div>';
   fs.writeFileSync(outputFile, htmlFile+header, 'UTF-8');
@@ -125,7 +125,7 @@ function initOutputFile(outputFile) {
       pad += indent;
       suite.specs.forEach(function (spec) {       
         results.push('<p>' + spec.description+'<div class="passed">'+spec.status + '</div> </p>');
-        results.push('<img src='+spec.img+'  width="1360" height="768"/>');
+        results.push('<img src='+spec.img+'  width="1200" height="800"/>');
 
         if (spec.failedExpectations) {
           pad += indent;
@@ -136,11 +136,9 @@ function initOutputFile(outputFile) {
         }
       });
 
-      results.push('</div></BODY></HTML>');
-      results.push('');
     });
 
-    results.push('');
+    results.push('</div></BODY></HTML>');
     return results.join('\n');
   }
 
