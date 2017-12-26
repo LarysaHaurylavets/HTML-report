@@ -51,7 +51,7 @@ var Reporter = function (options) {
     var currentSpec = {
       description: spec.description,
       status: spec.status,
-      img: screenshotName
+      //img: screenshotName
     };
 
     //take a screenshot
@@ -123,12 +123,12 @@ var Reporter = function (options) {
 
       suite.specs.forEach(function (spec) {
         results.push('<p>' + spec.description + '<div class="passed">' + spec.status + '</div> </p>');
-        results.push('<img src=' + spec.img + '  width="800" height="600"/>');
+        //results.push('<img src=' + spec.img + '  width="800" height="600"/>');
 
         if (spec.failedExpectations) {
           spec.failedExpectations.forEach(function (fe) {
             results.push('<p><div class="failed">message: ' + fe.message + '</div></p>');
-            results.push('<img src=' + spec.img + '  width="800" height="600"/>');
+            //results.push('<img src=' + spec.img + '  width="800" height="600"/>');
           });
 
         }
