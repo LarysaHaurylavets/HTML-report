@@ -46,20 +46,20 @@ var Reporter = function (options) {
 
   this.specDone = function (spec) {
     
-    //var screenshotName = screenshotDir + spec.description.replace(/\s+/g, "_") + '.png';
+    var screenshotName = screenshotDir + spec.description.replace(/\s+/g, "_") + '.png';
 
     var currentSpec = {
       description: spec.description,
       status: spec.status,
-      //img: screenshotName
+      img: screenshotName
     };
 
-    // //take a screenshot
-    // browser.takeScreenshot().then(function (png) {
-    //   var stream = fs.createWriteStream(screenshotName);
-    //   stream.write(new Buffer(png, 'base64'));
-    //   stream.end();
-    // });    
+    //take a screenshot
+    browser.takeScreenshot().then(function (png) {
+      var stream = fs.createWriteStream(screenshotName);
+      stream.write(new Buffer(png, 'base64'));
+      stream.end();
+    });    
 
     if (spec.failedExpectations.length > 0) {
       currentSpec.failedExpectations = spec.failedExpectations;
