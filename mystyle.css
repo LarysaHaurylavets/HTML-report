@@ -1,30 +1,19 @@
+
 body {
-    background-color: linen;
-}
-body { 
-    margin: 2em; 
-  }
-body, input[text], button { 
-    color: #888; 
-    font-family: Cambria, Georgia; 
+    background-color: rgba(175, 247, 237, 0.918);
+    margin: 2em;
 }
 h3 {
     color: rgb(113, 0, 128);
-    margin-left: 40px;
 }
 p{
-    font-size: 25px;
+    font-size: 15px;
 }
 .passed{
-    color: #06e232
+  color: green;
 }
+
 .faild{
-    color: #e20c06
-} 
-div{
-	font-size: 20px;
+  color: red;
 }
-/* everywhere else */
-* { 
-    font-family: Arial, Helvetica, sans-serif; 
-  }
+
